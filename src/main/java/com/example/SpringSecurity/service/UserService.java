@@ -20,4 +20,9 @@ public class UserService {
 
         return repo.save(user);
     }
+
+    public String verify(Users user) {
+
+        return "";
+    }
 }
