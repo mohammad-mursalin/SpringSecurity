@@ -1,5 +1,6 @@
 package com.example.SpringSecurity.service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -14,6 +15,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @Service
 public class JwtService {
@@ -47,7 +49,7 @@ public class JwtService {
                 .compact();
     }
 
-    private Key getKey() {
+    private SecretKey getKey() {
 
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
 
@@ -56,7 +58,19 @@ public class JwtService {
 
     public String extractUsername(String token) {
 
-        return "";
+        return extractClaims(token, Claims::getSubject);
+    }
+
+    private <T> T extractClaims(String token, Function<Claims, T> claimResolver) {
+
+        final Claims claims = extractAllClaims(token);
+
+        return claimResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+
+        return Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
