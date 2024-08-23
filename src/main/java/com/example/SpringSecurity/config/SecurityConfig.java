@@ -40,7 +40,7 @@ public class SecurityConfig {
         return httpSecurity
                             .csrf(customizer -> customizer.disable())
                             .authorizeHttpRequests(request -> request.requestMatchers("register","login").permitAll().anyRequest().authenticated())
-                            .formLogin(Customizer.withDefaults())
+                            //.formLogin(Customizer.withDefaults())
                             .httpBasic(Customizer.withDefaults())
                             .build();
     }
